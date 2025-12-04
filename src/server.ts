@@ -4,8 +4,8 @@ import express from "express";
 import { connectDB } from './config/db';
 import "dotenv/config";
 import userRoutes from "./routes/user.routes";
+import bookRoutes from "./routes/book.routes";
 // API ROUTES IMPORTS
-// import userRoutes from "./user/v1/user.routes";
 
 // MIDDLEWARES
 const app = express();
@@ -24,6 +24,7 @@ app.get('/', (_req, res) => {
 });
 
 app.use(userRoutes)
+app.use(bookRoutes)
 
 // FALLBACKS
 

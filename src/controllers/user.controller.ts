@@ -222,14 +222,12 @@ export const updateUser = async (
       updateData.password = await bcrypt.hash(password, salt);
     }
 
-    // Solo usuarios con permisos pueden editar permisos
-    if (canEditUsers) {
-      if (canCreateBooks !== undefined) updateData.canCreateBooks = canCreateBooks;
-      if (canEditBooks !== undefined) updateData.canEditBooks = canEditBooks;
-      if (canDisableBooks !== undefined) updateData.canDisableBooks = canDisableBooks;
-      if (editUsersPermission !== undefined) updateData.canEditUsers = editUsersPermission;
-      if (canDisableUsers !== undefined) updateData.canDisableUsers = canDisableUsers;
-    }
+    if (canCreateBooks !== undefined) updateData.canCreateBooks = canCreateBooks;
+    if (canEditBooks !== undefined) updateData.canEditBooks = canEditBooks;
+    if (canDisableBooks !== undefined) updateData.canDisableBooks = canDisableBooks;
+    if (editUsersPermission !== undefined) updateData.canEditUsers = editUsersPermission;
+    if (canDisableUsers !== undefined) updateData.canDisableUsers = canDisableUsers;
+
 
     const updatedUser = await UserModel.findByIdAndUpdate(id, updateData, {
       new: true,
