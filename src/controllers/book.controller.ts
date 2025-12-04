@@ -79,3 +79,60 @@ export const getBookById = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const updateBook = async (req: Request & { user?: any }, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const {
+      title,
+      author,
+      genre,
+      publisher,
+      publishedAt,
+      available,
+      active,
+    } = req.body;
+
+    const currentUser = req.user;
+    const canEditBooks = currentUser.permissions?.canEditBooks;
+
+    if (!canEditBooks) {
+      return res.status(403).json({
+        ok: false,
+        message: "No tienes permisos para editar libros",
+      });
+    }
+
+    const updatedBook = await BookModel.findByIdAndUpdate(
+      id,
+      {
+        title,
+        author,
+        genre,
+        publisher,
+        publishedAt,
+        available,
+        active,
+      },
+      { new: true } // retorna el libro actualizado
+    );
+
+    if (!updatedBook) {
+      return res.status(404).json({
+        message: "Libro no encontrado.",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Libro actualizado correctamente.",
+      data: updatedBook,
+    });
+  } catch (error) {
+    console.error("Error actualizando libro:", error);
+
+    return res.status(500).json({
+      message: "Error interno del servidor.",
+    });
+  }
+};
