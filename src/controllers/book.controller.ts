@@ -54,3 +54,28 @@ export const createBook = async (req: Request & { user?: any }, res: Response) =
     });
   }
 };
+
+export const getBookById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const book = await BookModel.findById(id);
+
+    if (!book) {
+      return res.status(404).json({
+        message: "Libro no encontrado.",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Libro encontrado.",
+      data: book,
+    });
+  } catch (error) {
+    console.error("Error obteniendo libro:", error);
+
+    return res.status(500).json({
+      message: "Error interno del servidor.",
+    });
+  }
+};

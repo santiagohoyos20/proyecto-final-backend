@@ -24,7 +24,7 @@ app.get('/', (_req, res) => {
 });
 
 app.use(userRoutes)
-app.use(bookRoutes)
+app.use("/books", bookRoutes)
 
 // FALLBACKS
 
