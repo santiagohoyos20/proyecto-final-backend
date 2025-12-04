@@ -136,3 +136,42 @@ export const updateBook = async (req: Request & { user?: any }, res: Response) =
     });
   }
 };
+
+export const deleteBook = async (req: Request & { user?: any }, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const currentUser = req.user;
+    const canEditBooks = currentUser.permissions?.canDisableBooks;
+
+    if (!canEditBooks) {
+      return res.status(403).json({
+        ok: false,
+        message: "No tienes permisos para deshabilitar libros",
+      });
+    }
+
+    // soft delete: solo deshabilitamos el libro
+    const disabledBook = await BookModel.findByIdAndUpdate(
+      id,
+      { active: false }, // soft delete
+      { new: true }
+    );
+
+    if (!disabledBook) {
+      return res.status(404).json({
+        message: "Libro no encontrado.",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Libro deshabilitado correctamente.",
+      data: disabledBook,
+    });
+  } catch (error) {
+    console.error("Error deshabilitando libro:", error);
+    return res.status(500).json({
+      message: "Error interno del servidor.",
+    });
+  }
+};
